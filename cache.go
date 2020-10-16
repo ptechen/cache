@@ -39,6 +39,14 @@ func AddData(params []*Add) {
 	wg.Wait()
 }
 
+func GetData(key interface{}) (data interface{}, ok bool) {
+	data, ok = DataCache.Load(key)
+	if ok {
+		return data.(*Cache).Data, ok
+	}
+	return nil, false
+}
+
 func deleteCache() {
 	go func() {
 		timer := time.NewTicker(time.Minute)
