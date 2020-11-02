@@ -24,7 +24,7 @@ func init() {
 	deleteCache()
 }
 
-func AddMany(params []*Add) {
+func Stores(params []*Add) {
 	wg := sync.WaitGroup{}
 	wg.Add(len(params))
 	for i := 0; i < len(params); i++ {
@@ -39,14 +39,14 @@ func AddMany(params []*Add) {
 	wg.Wait()
 }
 
-func AddOne(params *Add) {
+func Store(params *Add) {
 	DataCache.Store(params.Key, &Cache{
 		Data:      params.Val,
 		WriteTime: time.Now().Unix(),
 	})
 }
 
-func GetData(key interface{}) (data interface{}, ok bool) {
+func Load(key interface{}) (data interface{}, ok bool) {
 	data, ok = DataCache.Load(key)
 	if ok {
 		return data.(*Cache).Data, ok
