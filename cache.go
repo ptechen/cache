@@ -7,20 +7,19 @@ import (
 
 var DataCache = new(sync.Map)
 
-var Timeout int64
-
 type Cache struct {
 	Data      interface{}
 	WriteTime int64
+	Timeout   int64
 }
 
 type Add struct {
-	Key interface{}
-	Val interface{}
+	Key     interface{}
+	Val     interface{}
+	TimeOut int64
 }
 
 func init() {
-	Timeout = 60
 	deleteCache()
 }
 
@@ -31,6 +30,7 @@ func Stores(params []*Add) {
 		go func(v *Add) {
 			DataCache.Store(v.Key, &Cache{
 				Data:      v.Val,
+				Timeout:   v.TimeOut,
 				WriteTime: time.Now().Unix(),
 			})
 		}(params[i])
@@ -43,6 +43,7 @@ func Store(params *Add) {
 	DataCache.Store(params.Key, &Cache{
 		Data:      params.Val,
 		WriteTime: time.Now().Unix(),
+		Timeout:   params.TimeOut,
 	})
 }
 
@@ -69,7 +70,7 @@ func deleteCache() {
 
 func rangeDelete(key interface{}, value interface{}) bool {
 	curVal := value.(*Cache)
-	if time.Now().Unix()-curVal.WriteTime > Timeout {
+	if time.Now().Unix()-curVal.WriteTime > curVal.Timeout {
 		DataCache.Delete(key)
 	}
 	return true
