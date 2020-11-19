@@ -16,7 +16,7 @@ func StoreIncr(key interface{}, maxVal ...int) (ok bool) {
 	}
 
 	if len(maxVal) > 0 {
-		if maxVal[0] >= v {
+		if maxVal[0] > v {
 			Store(&Add{
 				Key:     key,
 				Val:     v + 1,
@@ -51,7 +51,7 @@ func StoreDecr(key interface{}, mixVal ...int) (ok bool) {
 	}
 
 	if len(mixVal) > 0 {
-		if mixVal[0] <= v {
+		if mixVal[0] < v {
 			Store(&Add{
 				Key:     key,
 				Val:     v - 1,
