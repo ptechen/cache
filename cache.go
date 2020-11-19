@@ -47,12 +47,21 @@ func Store(params *Add) {
 	})
 }
 
+func load(key interface{}) (cache *Cache, ok bool) {
+	data, ok := DataCache.Load(key)
+	if !ok {
+		return nil, false
+	}
+	return data.(*Cache), ok
+}
+
+
 func Load(key interface{}) (data interface{}, ok bool) {
 	data, ok = DataCache.Load(key)
-	if ok {
-		return data.(*Cache).Data, ok
+	if !ok {
+		return nil, false
 	}
-	return nil, false
+	return data.(*Cache).Data, ok
 }
 
 func deleteCache() {
@@ -70,6 +79,9 @@ func deleteCache() {
 
 func rangeDelete(key interface{}, value interface{}) bool {
 	curVal := value.(*Cache)
+	if curVal.Timeout == 0 {
+		return true
+	}
 	if time.Now().Unix()-curVal.WriteTime > curVal.Timeout {
 		DataCache.Delete(key)
 	}
