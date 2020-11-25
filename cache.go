@@ -64,6 +64,10 @@ func Load(key interface{}) (data interface{}, ok bool) {
 	return data.(*Cache).Data, ok
 }
 
+func Delete(key interface{}){
+	DataCache.Delete(key)
+}
+
 func deleteCache() {
 	go func() {
 		timer := time.NewTicker(time.Minute)
